@@ -32,20 +32,38 @@ class MongoObject():
         except:
             return 0
     
-    def newChat(self,*args):
-        args = list(args)
-
+    def newChat(self,nombre,usuarios):
+        #args = list(args)
+        #formato del array:
         '''{
             "_id": 102,
             "usuarios": [1,2,3]
         }'''
-        print(args)
+        #print(args)
         mydict = {
                 "_id": self.maxChatId(),
-                "usuarios": [int(a) for a in args[0]]
+                "nombre": nombre,
+                "usuarios": [int(a) for a in usuarios],
+                "mensajes":[]
                 }
         x = self.converColl.insert_one(mydict)
         return x.inserted_id
+
+    def addUser2chat(self,chat_id,idusu):
+        # falta verificar:
+        #   que el chat existe
+        #   que el usuario existe
+        #   que no está en el chat
+        print(chat_id,idusu)
+        x = self.converColl.update({ "_id": int(chat_id) },{ "$push": { "usuarios": int(idusu) } })
+        print(x)
+        return chat_id
+    
+    def addMsg2chat(self,chat_id,usuario,mensaje):
+        print(chat_id,usuario,mensaje)
+        x = self.converColl.update({ "_id": int(chat_id) },{ "$push": { "mensajes": { "autor":int(usuario),"texto":mensaje} } })
+        print(x)
+        return chat_id
 
     def maxChatId(self):
         try:
