@@ -6,4 +6,4 @@ WORKDIR /app
 
 RUN pip install -r requirements.txt
 
-CMD ["python3","api.py"]
+CMD ["python3","run-api-flask.py"]

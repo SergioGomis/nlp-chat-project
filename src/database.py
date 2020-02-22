@@ -44,13 +44,6 @@ class MongoObject():
     
     @jsonErrorHandler
     def newChat(self,nombre,usuarios):
-        #args = list(args)
-        #formato del array:
-        '''{
-            "_id": 102,
-            "usuarios": [1,2,3]
-        }'''
-        #print(args)
         mydict = {
                 "_id": self.maxChatId(),
                 "nombre": nombre,
