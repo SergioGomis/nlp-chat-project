@@ -48,4 +48,24 @@ def addMsg2chat(chat_id,*args):
     return 'oc', 200
 
 
+@app.route('/chat/<chat_id>/list')
+def showChatMsg(chat_id):
+    x = db.showChatMsg(chat_id)
+    #print(x)
+    return x, 200
+
+@app.route('/chat/<chat_id>/changename/<nuevonombre>')
+def changeChatName(chat_id,nuevonombre):
+    
+    db.changeChatName(chat_id,nuevonombre)
+    
+    return 'oc', 200
+
+@app.route('/chat/<chat_id>/sentiment')
+def getSentiment(chat_id):
+    print('1')
+    x = db.getSentiment(chat_id)
+    
+    return x, 200
+
 app.run("0.0.0.0", 5000, debug=True)
