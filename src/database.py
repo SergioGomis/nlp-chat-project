@@ -25,7 +25,7 @@ def flatten_text(lst):
 class MongoObject():
     def __init__(self):
         #self.myclient = client.get_default_database()["emotions"]
-        self.mydb = client.get_default_database()["emotions"]
+        self.mydb = client.get_default_database()
         self.userColl = self.mydb['users']
         self.converColl = self.mydb['conversations']
 
