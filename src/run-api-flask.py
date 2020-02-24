@@ -9,18 +9,23 @@ db = MongoObject()
 
 @app.route('/user/create/<name>')
 def newUser(name):
-    x = db.newUser(name)
-    return f'Usuario {name} añadido con id {x}'
+    resul = db.newUser(name)
+    return resul, 200
 
-
-@app.route('/users/<quantity>')
-def getNumUsers(quantity):
-    dev = db.getNumUsers(quantity)
+'''
+@app.route('/users/randn/<quantity>')
+def getRandNumUsers(quantity):
+    dev = db.getRandIdUsers(quantity)
+    return dev
+'''
+@app.route('/users/rand/<quantity>')
+def getRandUsers(quantity):
+    dev = db.getRandUsers(quantity)
     return dev
 
-
+'''
 @app.route('/chat/create', methods=['GET'])
-def newChat(*args):
+def newChat():
     nombre = request.args.get(key='nombre')
     usuarios = request.args.getlist(key='usuarios')
     x = db.newChat(nombre,usuarios)
@@ -28,24 +33,40 @@ def newChat(*args):
     for usuario in usuarios:
         print(usuario)
     return 'oc', 200
+    '''
+@app.route('/chat/create', methods=['GET'])
+def newChat():
+    nombre = request.args.get(key='nombre')
+    usuarios = request.args.getlist(key='usuarios')
+
+    dev = db.newChat(nombre,usuarios)
+    devuel = f'Chat {dev} creado correctamente'
+    return devuel, 200
 
 
 @app.route('/chat/<chat_id>/adduser', methods=['GET'])
-def addUser2chat(chat_id,*args):
+def addUser2chat(chat_id):
     usuario = request.args.get(key='usuario')
     x = db.addUser2chat(chat_id,usuario)
-    print(f'usuario añadido al chat {x}')
-    return 'oc', 200
+    if x == 0:
+        dev = "No se ha podido agregar el usuario, revise la información."
+    else:
+        dev = f'Usuario añadido al chat {x}'
+    return dev, 200
 
 
 
 @app.route('/chat/<chat_id>/addmessage', methods=['GET'])
-def addMsg2chat(chat_id,*args):
+def addMsg2chat(chat_id):
     usuario = request.args.get(key='usuario')
     mensaje = request.args.get(key='mensaje')
     x = db.addMsg2chat(chat_id,usuario,mensaje)
-    print(f'mensaje añadido al chat {x}')
-    return 'oc', 200
+    if x == 0:
+        dev = "No se ha podido agregar el usuario, revise la información."
+    else:
+        dev = '✓✓ Mensaje enviado'
+        print(f'LOG: Mensaje añadido al chat {x}')
+    return dev, 200
 
 
 @app.route('/chat/<chat_id>/list')
@@ -63,9 +84,18 @@ def changeChatName(chat_id,nuevonombre):
 
 @app.route('/chat/<chat_id>/sentiment')
 def getSentiment(chat_id):
-    print('1')
+    #print('1')
     x = db.getSentiment(chat_id)
     
     return x, 200
+
+@app.route('/user/<user_name>/recommend')
+def getRecommendations(user_name):
+    #print('1')
+    x = db.getRecommendations(user_name)
+    
+    return x, 200
+
+
 
 app.run("0.0.0.0", 5000, debug=True)
