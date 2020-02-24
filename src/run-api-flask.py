@@ -1,39 +1,27 @@
 from flask import Flask, request
 from bson.json_util import dumps
 from database import MongoObject
+import os
 
 
 app = Flask(__name__)
 
 db = MongoObject()
 
+@app.route('/')
+def entry():
+    return """<a href="https://github.com/SergioGomis/nlp-chat-project">About this project</a>"""
+
 @app.route('/user/create/<name>')
 def newUser(name):
     resul = db.newUser(name)
     return resul, 200
 
-'''
-@app.route('/users/randn/<quantity>')
-def getRandNumUsers(quantity):
-    dev = db.getRandIdUsers(quantity)
-    return dev
-'''
 @app.route('/users/rand/<quantity>')
 def getRandUsers(quantity):
     dev = db.getRandUsers(quantity)
     return dev
 
-'''
-@app.route('/chat/create', methods=['GET'])
-def newChat():
-    nombre = request.args.get(key='nombre')
-    usuarios = request.args.getlist(key='usuarios')
-    x = db.newChat(nombre,usuarios)
-    print(f'Chat {x} creado con:')
-    for usuario in usuarios:
-        print(usuario)
-    return 'oc', 200
-    '''
 @app.route('/chat/create', methods=['GET'])
 def newChat():
     nombre = request.args.get(key='nombre')
@@ -42,7 +30,6 @@ def newChat():
     dev = db.newChat(nombre,usuarios)
     devuel = f'Chat {dev} creado correctamente'
     return devuel, 200
-
 
 @app.route('/chat/<chat_id>/adduser', methods=['GET'])
 def addUser2chat(chat_id):
@@ -72,30 +59,23 @@ def addMsg2chat(chat_id):
 @app.route('/chat/<chat_id>/list')
 def showChatMsg(chat_id):
     x = db.showChatMsg(chat_id)
-    #print(x)
     return x, 200
 
 @app.route('/chat/<chat_id>/changename/<nuevonombre>')
 def changeChatName(chat_id,nuevonombre):
-    
     db.changeChatName(chat_id,nuevonombre)
-    
     return 'oc', 200
 
 @app.route('/chat/<chat_id>/sentiment')
 def getSentiment(chat_id):
-    #print('1')
     x = db.getSentiment(chat_id)
-    
     return x, 200
 
 @app.route('/user/<user_name>/recommend')
 def getRecommendations(user_name):
-    #print('1')
     x = db.getRecommendations(user_name)
-    
     return x, 200
 
 
 
-app.run("0.0.0.0", 5000, debug=True)
+app.run("0.0.0.0", os.getenv("PORT"), debug=True)

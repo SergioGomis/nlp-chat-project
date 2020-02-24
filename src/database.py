@@ -1,4 +1,3 @@
-
 from bson.json_util import dumps
 from errorHandler import jsonErrorHandler
 import nltk
@@ -11,19 +10,20 @@ import requests
 import pandas as pd
 import numpy as np
 import dns
-import os
-from dotenv import load_dotenv
-load_dotenv()
+
+from config import dbURL
+
+client = pymongo.MongoClient(dbURL)
+print(f"Connecting to {dbURL}")
 
 nltk.download('vader_lexicon')
 
-def flatten_text(lst):
-    return " ".join(lst)
+
 
 class MongoObject():
     def __init__(self):
-        self.myclient = pymongo.MongoClient(os.getenv("MDB_URL"))
-        self.mydb = self.myclient["emotions"]
+        #self.myclient = client.get_default_database()["emotions"]
+        self.mydb = client.get_default_database()
         self.userColl = self.mydb['users']
         self.converColl = self.mydb['conversations']
 
@@ -37,13 +37,7 @@ class MongoObject():
             return f'Usuario {name} añadido con id {x.inserted_id}'
         else:
             return 'El usuario ya existe'
-    '''
-    @jsonErrorHandler
-    def getRandIdUsers(self,qty):
-        users_tot = self.userColl.find({})
-        dev = random.sample(list(users_tot),int(qty))
-        return dumps(dev)
-'''
+
     @jsonErrorHandler
     def getRandUsers(self,qty):
         users_tot = self.userColl.find({})
@@ -91,15 +85,6 @@ class MongoObject():
             return 0
         return dev
 
-    '''@jsonErrorHandler
-    def userExists(self,user_id):
-        print('Buscando usuario ',user_id)
-        dev = self.userColl.find_one({"_id":user_id})
-        if not dev:
-            print("no existe")
-            return 0
-        return dev'''
-
     @jsonErrorHandler
     def addUser2chat(self,chat_id,usuario):
         print('LOG:',chat_id,usuario)
@@ -127,10 +112,6 @@ class MongoObject():
 
     @jsonErrorHandler
     def addMsg2chat(self,chat_id,usuario,mensaje):
-        # falta verificar:
-        #   que el chat existe
-        #   que el usuario existe
-        #   que está en el chat
         print('LOG:',chat_id,usuario,mensaje)
         if self.chatExists(chat_id) != 0:
             idUsu = self.getUserByName(usuario)
@@ -159,14 +140,11 @@ class MongoObject():
     @jsonErrorHandler
     def showChatMsg(self,chat_id):
         query = self.converColl.find({"_id":int(chat_id)},{"_id":0,"mensajes":1})
-        #print(query)
         return query[0]
 
     @jsonErrorHandler
     def changeChatName(self,chat_id,nuevonombre):
-        
         x = self.converColl.update({ "_id": int(chat_id) },{ "$set": { "nombre": nuevonombre } })
-        
         return x
 
     @jsonErrorHandler
@@ -180,10 +158,6 @@ class MongoObject():
 
     @jsonErrorHandler
     def getRecommendations(self,usu_recom):
-        # extraer un df con todos los mensajes de cada usuario
-        # crear matriz de similaridad
-        # ordenar y devolver top 3
-
         x = self.converColl.find({},{"_id":0,"mensajes":1})
         usuarios = []
         mensajes = []
@@ -193,7 +167,7 @@ class MongoObject():
                 mensajes.append(e['texto'])
         df = pd.DataFrame({"usuarios":usuarios,"mensajes":mensajes})
         df = pd.DataFrame(df.groupby("usuarios")["mensajes"].apply(list))
-        df['mensajes'] = df['mensajes'].apply(flatten_text)
+        df['mensajes'] = df['mensajes'].apply(lambda texto: " ".join(texto))
         df=df.reset_index()
         data = { a:b for a,b in zip(list(df['usuarios']),list(df['mensajes']))}
         count_vectorizer = CountVectorizer()
@@ -205,7 +179,6 @@ class MongoObject():
         similarity_matrix = distance(df,df)
         sim_df = pd.DataFrame(similarity_matrix, columns=data.keys(), index=data.keys())
         np.fill_diagonal(sim_df.values, 0)
-        #recomendados_df = sim_df[int(user_id)].sort_values(ascending=False).head(3)
         recomendados_df = sim_df[int(self.getUserByName(usu_recom)['_id'])].sort_values(ascending=False).head(3)
         list_ids = list(recomendados_df.index)
         list_values = list(recomendados_df.values)
