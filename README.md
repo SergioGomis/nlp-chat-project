@@ -1,22 +1,29 @@
-## under construction
+# Natural Language Processing
+
+<img src="https://github.com/SergioGomis/nlp-chat-project/blob/master/images/chat.png" width="300">
+
+This repo is a project for developing skills at the Data Analytics bootcamp of Ironhack Madrid by building an API in python with Flask that allows anyone to store and query conversations, messages and users, and analyze their positivity/negativity.
 
 
-project for ironhack bootcamp blah blah blah
+### Requirements and deployment
 
+* [ ] Pending to build Docker image properly and upload it to Haroku
 
-## TO-DO-List
+### Usage API Endpoints
 
-* [x] Basic methods for api engine and mongodb access
-  * [x] Some other invented methods
-  * [x] Rewriting some methods
-* [x] Find datasets with movie dialogues, etc
-  * [x] Populate database with conversations
-* [x] Sentiment analysis of a chat
-* [x] Recommend users/chatgroups
-* [x] build and run a docker image
-* ~~[ ] investigate slack API~~
-* [ ] Improve notebooks stoytelling
-* [ ] this readme file
+* /user/create/(nombre)
+* /users/rand/(qty)
+* /chat/create
+* /chat/(idchat)/adduser
+* /chat/(idchat)/addmessage
+* /chat/(idchat)/list
+* /chat/(idchat)/changename/(nombrenombre)
+* /chat/(idchat)/sentiment
+* /user/(nombreusuario)/recommend
+
+### Examples
+
+Some examples are provided as Jupyter Notebooks.
 
 
 
