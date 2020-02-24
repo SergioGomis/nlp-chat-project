@@ -6,14 +6,17 @@ project for ironhack bootcamp blah blah blah
 
 ## TO-DO-List
 
-- [x] Basic methods for api engine and mongodb access
-- [x] populate database with conversations OR/AND
-- [x] find dataset with conversations
-- [x] sentiment analysis
-- [ ] recommend users/chatgroups
-- [x] build and run a docker image
-- [ ] investigate slack API
-- [ ] this readme file
+* [x] Basic methods for api engine and mongodb access
+  * [x] Some other invented methods
+  * [x] Rewriting some methods
+* [x] Find datasets with movie dialogues, etc
+  * [x] Populate database with conversations
+* [x] Sentiment analysis of a chat
+* [x] Recommend users/chatgroups
+* [x] build and run a docker image
+* ~~[ ] investigate slack API~~
+* [ ] Improve notebooks stoytelling
+* [ ] this readme file
 
 
 
