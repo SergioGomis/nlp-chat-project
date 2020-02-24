@@ -19,8 +19,6 @@ print(f"Connecting to {dbURL}")
 nltk.download('vader_lexicon')
 
 
-def flatten_text(lst):
-    return " ".join(lst)
 
 class MongoObject():
     def __init__(self):
@@ -169,7 +167,7 @@ class MongoObject():
                 mensajes.append(e['texto'])
         df = pd.DataFrame({"usuarios":usuarios,"mensajes":mensajes})
         df = pd.DataFrame(df.groupby("usuarios")["mensajes"].apply(list))
-        df['mensajes'] = df['mensajes'].apply(flatten_text)
+        df['mensajes'] = df['mensajes'].apply(lambda texto: " ".join(texto))
         df=df.reset_index()
         data = { a:b for a,b in zip(list(df['usuarios']),list(df['mensajes']))}
         count_vectorizer = CountVectorizer()

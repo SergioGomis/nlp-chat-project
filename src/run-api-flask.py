@@ -1,11 +1,16 @@
 from flask import Flask, request
 from bson.json_util import dumps
 from database import MongoObject
+import os
 
 
 app = Flask(__name__)
 
 db = MongoObject()
+
+@app.route('/')
+def entry():
+    return """<a href="https://github.com/SergioGomis/nlp-chat-project">About this project</a>"""
 
 @app.route('/user/create/<name>')
 def newUser(name):
@@ -73,4 +78,4 @@ def getRecommendations(user_name):
 
 
 
-app.run("0.0.0.0", 5000, debug=True)
+app.run("0.0.0.0", os.getenv("PORT"), debug=True)
